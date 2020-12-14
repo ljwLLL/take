@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.HospitalYearUserDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hpower.entity.HospitalYearUserDetail">
+        <id column="id" property="id" />
+        <result column="year_id" property="yearId" />
+        <result column="doctor_count" property="doctorCount" />
+        <result column="doctor_clinic_count" property="doctorClinicCount" />
+        <result column="doctor_public_count" property="doctorPublicCount" />
+        <result column="doctor_medicine_count" property="doctorMedicineCount" />
+        <result column="doctor_bx_count" property="doctorBxCount" />
+        <result column="doctor_sx_count" property="doctorSxCount" />
+        <result column="doctor_bk_count" property="doctorBkCount" />
+        <result column="doctor_senior_count" property="doctorSeniorCount" />
+        <result column="doctor_middle_count" property="doctorMiddleCount" />
+        <result column="doctor_primary_count" property="doctorPrimaryCount" />
+        <result column="tech_count" property="techCount" />
+        <result column="tech_bx_count" property="techBxCount" />
+        <result column="tech_sx_count" property="techSxCount" />
+        <result column="tech_bk_count" property="techBkCount" />
+        <result column="tech_senior_count" property="techSeniorCount" />
+        <result column="tech_middle_count" property="techMiddleCount" />
+        <result column="tech_primary_count" property="techPrimaryCount" />
+        <result column="nurse_count" property="nurseCount" />
+        <result column="nurse_bx_count" property="nurseBxCount" />
+        <result column="nurse_sx_count" property="nurseSxCount" />
+        <result column="nurse_bk_count" property="nurseBkCount" />
+        <result column="nurse_senior_count" property="nurseSeniorCount" />
+        <result column="nurse_middle_count" property="nurseMiddleCount" />
+        <result column="nurse_primary_count" property="nursePrimaryCount" />
+        <result column="remark" property="remark" />
+        <result column="enabled" property="enabled" />
+        <result column="valid" property="valid" />
+        <result column="creator" property="creator" />
+        <result column="creator_name" property="creatorName" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="updater_name" property="updaterName" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year_id, doctor_count, doctor_clinic_count, doctor_public_count, doctor_medicine_count, doctor_bx_count, doctor_sx_count, doctor_bk_count, doctor_senior_count, doctor_middle_count, doctor_primary_count, tech_count, tech_bx_count, tech_sx_count, tech_bk_count, tech_senior_count, tech_middle_count, tech_primary_count, nurse_count, nurse_bx_count, nurse_sx_count, nurse_bk_count, nurse_senior_count, nurse_middle_count, nurse_primary_count, remark, enabled, valid, creator, creator_name, create_time, updater, updater_name, update_time, version
+    </sql>
+
+</mapper>

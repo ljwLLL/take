@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SReportMapper">
+
+
+
+    <select id="selectHospitalMonthByPage" parameterType="com.hpower.param.HospitalMonthParam" resultType="com.hpower.vo.HospitalMonthVo">
+       select
+       m.id,m.hospital_name as hospitalName,m.month,m.time,m.name,m.mobile,m.dept,m.post,m.state
+       from t_hospital_month m
+       left join t_hospital h on m.hospital_id = h.id
+       <where>
+           <if test="param.hospitalId != null ">
+               and m.hospital_id = #{param.hospitalId}
+           </if>
+           <if test="param.startMonth != null and param.startMonth != ''">
+               and m.month &gt;= #{param.startMonth}
+           </if>
+           <if test="param.endMonth != null and param.endMonth != ''">
+               and m.month &lt;= #{param.endMonth}
+           </if>
+           <if test="param.startTime != null and param.startTime != ''">
+               and m.time &gt;= #{param.startTime}
+           </if>
+           <if test="param.state != null">
+               and m.state = #{param.state}
+           </if>
+           <if test="param.endTime != null and param.endTime != ''">
+               and m.time &lt;= #{param.endTime}
+           </if>
+           <if test="param.type == 1">
+               and m.hospital_id in
+               <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+           and m.valid = 1
+           and h.valid = 1
+           and h.quality_id = #{param.qualityId}
+       </where>
+        order by m.state, m.month DESC
+    </select>
+
+    <select id="selectHospitalYearByPage" parameterType="com.hpower.param.HospitalYearParam" resultType="com.hpower.vo.HospitalYearVo">
+        select
+        y.id as yearId,y.hospital_name as hospitalName,y.year,y.time,y.name,y.mobile,y.dept,y.post,y.state,h.level
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null ">
+                and y.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.startYear != null and param.startYear != ''">
+                and y.year &gt;= #{param.startYear}
+            </if>
+            <if test="param.endYear != null and param.endYear != ''">
+                and y.year &lt;= #{param.endYear}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                and y.time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                and y.time &lt;= #{param.endTime}
+            </if>
+            <if test="param.state != null">
+                and y.state = #{param.state}
+            </if>
+            <if test="param.type == 1">
+                and y.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and y.valid = 1
+            and h.valid = 1
+            and h.quality_id = #{param.qualityId}
+        </where>
+        order by y.state , y.year DESC
+    </select>
+
+
+    <select id="selectHospitalMonthList" parameterType="com.hpower.param.HospitalMonthParam" resultType="com.hpower.vo.HospitalMonthVo">
+        select
+        m.id,m.hospital_name as hospitalName,m.month,m.time,m.name,m.mobile,m.dept,m.post,m.state,d.name as stateName
+        from t_hospital_month m
+        left join t_hospital h on m.hospital_id = h.id
+        left join t_sys_dict_data d on d.code = m.state
+        <where>
+            <if test="param.hospitalId != null ">
+                and m.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.startMonth != null and param.startMonth != ''">
+                and m.month &gt;= #{param.startMonth}
+            </if>
+            <if test="param.endMonth != null and param.endMonth != ''">
+                and m.month &lt;= #{param.endMonth}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                and m.time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                and m.time &lt;= #{param.endTime}
+            </if>
+            <if test="param.type == 1">
+                and m.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and d.dict_type_id = 3
+            and m.valid = 1
+            and h.valid = 1
+            and h.quality_id = #{param.qualityId}
+        </where>
+        order by m.state, m.month DESC
+    </select>
+
+
+    <select id="selectHospitalYearList" parameterType="com.hpower.param.HospitalYearParam" resultType="com.hpower.vo.HospitalYearVo">
+        select
+        y.id as yearId,y.hospital_name as hospitalName,y.year,y.time,y.name,y.mobile,y.dept,y.post,y.state,d.name as stateName
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_sys_dict_data d on d.code = y.state
+        <where>
+            <if test="param.hospitalId != null ">
+                and y.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.startYear != null and param.startYear != ''">
+                and y.year &gt;= #{param.startYear}
+            </if>
+            <if test="param.endYear != null and param.endYear != ''">
+                and y.year &lt;= #{param.endYear}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                and y.time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                and y.time &lt;= #{param.endTime}
+            </if>
+            <if test="param.type == 1">
+                and y.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and d.dict_type_id = 3
+            and y.valid = 1
+            and h.valid = 1
+            and h.quality_id = #{param.qualityId}
+        </where>
+        order by y.state , y.year DESC
+    </select>
+
+
+    <delete id="deleteHospitalMonthStructureDetail" parameterType="java.lang.Long">
+        delete from t_hospital_month_structure_detail where month_id = #{monthId}
+    </delete>
+
+    <delete id="deleteHospitalMonthProcessDetail" parameterType="java.lang.Long">
+        delete from t_hospital_month_process_detail where month_id = #{monthId}
+    </delete>
+
+    <delete id="deleteHospitalMonthResultDetail" parameterType="java.lang.Long">
+         delete from t_hospital_month_result_detail where month_id = #{monthId}
+    </delete>
+
+    <select id="queryHospitalMonthByDate" resultType="com.hpower.entity.HospitalMonth" parameterType="java.util.Map">
+        select
+        m.id,m.hospital_name as hospitalName,m.month,m.time,m.name,m.mobile,m.dept,m.post,m.state
+        from t_hospital_month m
+        left join t_hospital h on m.hospital_id = h.id
+        left join t_quality_control q on h.quality_id = q.id
+        where
+        m.month = #{month}
+        and q.id = #{id}
+        and m.valid = 1
+        and m.enabled = 1
+        and m.state=2
+    </select>
+
+    <select id="queryHospitalYearByDate" resultType="com.hpower.entity.HospitalYear" parameterType="java.util.Map">
+        select
+         y.id as yearId,y.hospital_name as hospitalName,y.year,y.time,y.name,y.mobile,y.dept,y.post,y.state,h.level
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_quality_control q on h.quality_id = q.id
+        where
+        y.year = #{year}
+        and q.id = #{id}
+        and y.valid = 1
+        and y.enabled = 1
+        and y.state=2
+    </select>
+</mapper>

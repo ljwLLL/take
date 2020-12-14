@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.HospitalYearMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hpower.entity.HospitalYear">
+        <id column="id" property="id" />
+        <result column="hospital_id" property="hospitalId" />
+        <result column="hospital_name" property="hospitalName" />
+        <result column="year" property="year" />
+        <result column="time" property="time" />
+        <result column="name" property="name" />
+        <result column="dept" property="dept" />
+        <result column="post" property="post" />
+        <result column="mobile" property="mobile" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="enabled" property="enabled" />
+        <result column="valid" property="valid" />
+        <result column="creator" property="creator" />
+        <result column="creator_name" property="creatorName" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="updater_name" property="updaterName" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hospital_id, hospital_name, year, time, name, dept, post, mobile, state, remark, enabled, valid, creator, creator_name, create_time, updater, updater_name, update_time, version
+    </sql>
+
+</mapper>

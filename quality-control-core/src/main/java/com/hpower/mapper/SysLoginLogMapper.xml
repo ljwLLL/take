@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SysLoginLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hpower.entity.SysLoginLog">
+        <id column="id" property="id" />
+        <result column="session_id" property="sessionId" />
+        <result column="user_id" property="userId" />
+        <result column="quality_id" property="qualityId" />
+        <result column="hospital_id" property="hospitalId" />
+        <result column="type" property="type" />
+        <result column="login_time" property="loginTime" />
+        <result column="loginout_time" property="loginoutTime" />
+        <result column="device_class" property="deviceClass" />
+        <result column="device_name" property="deviceName" />
+        <result column="device_brand" property="deviceBrand" />
+        <result column="ip_address" property="ipAddress" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="area" property="area" />
+        <result column="browser" property="browser" />
+        <result column="os" property="os" />
+        <result column="user_agent" property="userAgent" />
+        <result column="reamrk" property="reamrk" />
+        <result column="enabled" property="enabled" />
+        <result column="valid" property="valid" />
+        <result column="creator" property="creator" />
+        <result column="creator_name" property="creatorName" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="updater_name" property="updaterName" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, session_id, user_id, quality_id, hospital_id, type, login_time, loginout_time, device_class, device_name, device_brand, ip_address, province, city, area, browser, os, user_agent, reamrk, enabled, valid, creator, creator_name, create_time, updater, updater_name, update_time, version
+    </sql>
+
+</mapper>

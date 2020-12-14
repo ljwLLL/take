@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SMenuMapper">
+
+
+    <select id="listByUser" parameterType="java.lang.Long" resultType="com.hpower.vo.UserMenuVo">
+        select distinct menu.id as id,
+        menu.parent_id as parentId,
+        menu.code as code,
+        menu.name as name,
+        menu.image as icon,
+        menu.url as href,
+        menu.type as type,
+        menu.order_num as orderNum
+        from t_quality_user_role userRole
+        inner join t_quality_role_menu roleMenu
+        inner join t_quality_menu menu on userRole.role_id = roleMenu.role_id
+        and roleMenu.menu_id = menu.id
+        where userRole.user_id = #{userId}
+        and userRole.valid = 1
+        and roleMenu.valid = 1
+        and menu.valid = 1
+        and menu.enabled = 1
+        and menu.quality_id = #{qualityId}
+        order by menu.order_num;
+    </select>
+
+    <select id="listAll" parameterType="java.lang.Long" resultType="com.hpower.vo.UserMenuVo">
+        select menu.id as id,
+        menu.parent_id as parentId,
+        menu.code as code,
+        menu.name as name,
+        menu.image as icon,
+        menu.url as href,
+        menu.type as type,
+        menu.order_num as orderNum
+        from t_quality_menu menu
+        where
+        quality_id = #{qualityId}
+        and enabled = 1
+        and valid = 1
+    </select>
+
+    <select id="listByRole" parameterType="java.lang.Long" resultType="com.hpower.vo.UserMenuVo">
+        select distinct menu.id as id,
+        menu.parent_id as parentId,
+        menu.code as code,
+        menu.name as name,
+        menu.image as icon,
+        menu.url as href,
+        menu.type as type,
+        menu.order_num as orderNum
+        from  t_quality_role_menu roleMenu
+        inner join t_quality_menu menu
+        on roleMenu.menu_id = menu.id
+        where roleMenu.valid = 1
+        and roleMenu.role_id =#{roleId}
+        and menu.valid = 1
+        and menu.enabled = 1
+        and menu.quality_id = #{qualityId}
+        order by menu.order_num;
+
+    </select>
+</mapper>

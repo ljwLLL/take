@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SDataPanelMapper">
+
+
+    <select id="selectPatient" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataMonthDetailVo">
+        select h.city_name as cityName,h.city_code as cityId,cast(sum(${dto.tag})/count(*) as DECIMAL(18,2)) as
+        `value`
+        from t_hospital_month m
+        left join t_hospital_month_process_detail p on m.id = p.month_id
+        left join t_hospital_month_structure_detail s on m.id = s.month_id
+        left join t_hospital_month_result_detail r on m.id = r.month_id
+        left join t_hospital h on m.hospital_id = h.id
+        <where>
+            <if test="dto.startMonth != null and dto.startMonth != ''">
+                and m.month &gt;= #{dto.startMonth}
+            </if>
+            <if test="dto.endMonth != null and dto.endMonth != ''">
+                and m.month &lt;= #{dto.endMonth}
+            </if>
+            and h.quality_id = #{dto.qualityId}
+            and m.valid = 1
+            and h.valid = 1
+            and m.enabled = 1
+            and h.enabled = 1
+            and m.state = 2
+            and LENGTH(0+${dto.tag})=LENGTH(${dto.tag})
+        </where>
+        group by h.city_name,h.city_code order by `value` desc
+        LIMIT 5
+    </select>
+
+
+    <select id="selectPatientDetail" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataMonthElseVo">
+        select h.name as hospitalName,cast(sum(${dto.tag})/count(*) as DECIMAL(18,2)) as
+        `value`
+        from t_hospital_month m
+        left join t_hospital_month_process_detail p on m.id = p.month_id
+        left join t_hospital_month_structure_detail s on m.id = s.month_id
+        left join t_hospital_month_result_detail r on m.id = r.month_id
+        left join t_hospital h on m.hospital_id = h.id
+        <where>
+            <if test="dto.startMonth != null and dto.startMonth != ''">
+                and m.month &gt;= #{dto.startMonth}
+            </if>
+            <if test="dto.endMonth != null and dto.endMonth != ''">
+                and m.month &lt;= #{dto.endMonth}
+            </if>
+            <if test="dto.cityId != null">
+                and h.city_code = #{dto.cityId}
+            </if>
+            and h.quality_id = #{dto.qualityId}
+            and m.valid = 1
+            and h.valid = 1
+            and m.enabled = 1
+            and h.enabled = 1
+            and m.state = 2
+            and LENGTH(0+${dto.tag})=LENGTH(${dto.tag})
+        </where>
+        group by h.name order by `value` desc
+    </select>
+
+    <select id="selectHospitalYearList" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="java.lang.Integer">
+        select
+        distinct h.level
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_hospital_year_base_detail b on y.id = b.year_id
+        <where>
+            <if test="dto.startYear != null and dto.startYear != ''">
+                and y.year &gt;= #{dto.startYear}
+            </if>
+            <if test="dto.endYear != null and dto.endYear != ''">
+                and y.year &lt;= #{dto.endYear}
+            </if>
+            and y.valid = 1
+            and h.valid = 1
+            and h.enabled = 1
+            and h.quality_id = #{dto.qualityId}
+            and b.valid = 1
+            and y.state = 2
+        </where>
+        order by h.level asc
+    </select>
+
+    <select id="selectUserBedList" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataYearCommonDetailVo">
+        select
+        a.type,count(*) as count
+        from
+        (select
+        case
+        when (u.doctor_count='/' or u.tech_count='/' or u.nurse_count='/' or b.bed_count='/' or u.doctor_count is null or u.tech_count is null or u.nurse_count is null or b.bed_count is null or u.doctor_count ='' or u.tech_count ='' or u.nurse_count ='' or b.bed_count ='') then 3
+        when CAST((u.doctor_count+u.tech_count+u.nurse_count)/b.bed_count*100 as DECIMAL(18,2))&gt;=0.5 then 1
+        else 2
+        end as type,
+        h.name
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_hospital_year_user_detail u on y.id = u.year_id
+        left join t_hospital_year_base_detail b on y.id = b.year_id
+        left join t_hospital_year_function_detail f on y.id = f.year_id
+        <where>
+            <if test="dto.startYear != null and dto.startYear != ''">
+                and y.year &gt;= #{dto.startYear}
+            </if>
+            <if test="dto.endYear != null and dto.endYear != ''">
+                and y.year &lt;= #{dto.endYear}
+            </if>
+            and h.level = #{dto.level}
+            and h.quality_id = #{dto.qualityId}
+            and y.valid = 1
+            and y.state = 2
+        </where>
+        ) a
+        group by type order by count desc
+    </select>
+
+    <select id="selectPatientList" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataYearCommonDetailVo">
+        select
+        a.type,count(*) as count
+        from
+        (select
+        case
+        when (b.patient_screen_count='/' or b.year_patient_count='/' or b.patient_screen_count is null or b.year_patient_count is null or b.patient_screen_count ='' or b.year_patient_count ='') then 3
+        when CAST(b.patient_screen_count/b.year_patient_count*100 as DECIMAL(18,2))&gt;=50 then 1
+        else 2
+        end as type,
+        h.name
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_hospital_year_user_detail u on y.id = u.year_id
+        left join t_hospital_year_base_detail b on y.id = b.year_id
+        left join t_hospital_year_function_detail f on y.id = f.year_id
+        <where>
+            <if test="dto.startYear != null and dto.startYear != ''">
+                and y.year &gt;= #{dto.startYear}
+            </if>
+            <if test="dto.endYear != null and dto.endYear != ''">
+                and y.year &lt;= #{dto.endYear}
+            </if>
+            and h.level = #{dto.level}
+            and h.quality_id = #{dto.qualityId}
+            and y.valid = 1
+            and y.state = 2
+        </where>
+        ) a
+        group by type order by count desc
+    </select>
+
+    <select id="selectEntericList" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataYearCommonDetailVo">
+        select
+        a.type,count(*) as count
+        from
+        (select
+        case
+        when (nutrition_function like '%4%') then 1
+        else 0
+        end as type,
+        h.name
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_hospital_year_user_detail u on y.id = u.year_id
+        left join t_hospital_year_base_detail b on y.id = b.year_id
+        left join t_hospital_year_function_detail f on y.id = f.year_id
+        <where>
+            <if test="dto.startYear != null and dto.startYear != ''">
+                and y.year &gt;= #{dto.startYear}
+            </if>
+            <if test="dto.endYear != null and dto.endYear != ''">
+                and y.year &lt;= #{dto.endYear}
+            </if>
+            and h.level = #{dto.level}
+            and h.quality_id = #{dto.qualityId}
+            and y.valid = 1
+            and y.state = 2
+        </where>
+        ) a
+        group by type order by count desc
+    </select>
+
+    <select id="selectOwnList" parameterType="com.hpower.dto.DataPanelDto"
+            resultType="com.hpower.vo.DataYearCommonDetailVo">
+        select
+        a.type,count(*) as count
+        from
+        (select
+        case
+        when whether_independent = 1 then 1
+        else 0
+        end as type,
+        h.name
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        left join t_hospital_year_user_detail u on y.id = u.year_id
+        left join t_hospital_year_base_detail b on y.id = b.year_id
+        left join t_hospital_year_function_detail f on y.id = f.year_id
+        <where>
+            <if test="dto.startYear != null and dto.startYear != ''">
+                and y.year &gt;= #{dto.startYear}
+            </if>
+            <if test="dto.endYear != null and dto.endYear != ''">
+                and y.year &lt;= #{dto.endYear}
+            </if>
+            and h.level = #{dto.level}
+            and h.quality_id = #{dto.qualityId}
+            and y.valid = 1
+            and y.state = 2
+        </where>
+        ) a
+        group by type order by count desc
+    </select>
+</mapper>

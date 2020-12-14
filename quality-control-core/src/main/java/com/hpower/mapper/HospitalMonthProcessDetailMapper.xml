@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.HospitalMonthProcessDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hpower.entity.HospitalMonthProcessDetail">
+        <id column="id" property="id" />
+        <result column="month_id" property="monthId" />
+        <result column="nutp_one_number" property="nutpOneNumber" />
+        <result column="nutp_one_count" property="nutpOneCount" />
+        <result column="nutp_perentage" property="nutpPerentage" />
+        <result column="nutp_tow_number" property="nutpTowNumber" />
+        <result column="nutp_tow_count" property="nutpTowCount" />
+        <result column="nutp_tow_perentage" property="nutpTowPerentage" />
+        <result column="nutp_three_number" property="nutpThreeNumber" />
+        <result column="nutp_three_count" property="nutpThreeCount" />
+        <result column="nutp_three_perentage" property="nutpThreePerentage" />
+        <result column="nutp_four_number" property="nutpFourNumber" />
+        <result column="nutp_four_count" property="nutpFourCount" />
+        <result column="nutp_four_perentage" property="nutpFourPerentage" />
+        <result column="nutp_five_number" property="nutpFiveNumber" />
+        <result column="nutp_five_count" property="nutpFiveCount" />
+        <result column="nutp_five_perentage" property="nutpFivePerentage" />
+        <result column="nutp_six_number" property="nutpSixNumber" />
+        <result column="nutp_six_count" property="nutpSixCount" />
+        <result column="nutp_six_perentage" property="nutpSixPerentage" />
+        <result column="nutp_seven_a_number" property="nutpSevenANumber" />
+        <result column="nutp_seven_a_count" property="nutpSevenACount" />
+        <result column="nutp_seven_a_perentage" property="nutpSevenAPerentage" />
+        <result column="nutp_seven_b_number" property="nutpSevenBNumber" />
+        <result column="nutp_seven_b_count" property="nutpSevenBCount" />
+        <result column="nutp_seven_b_perentage" property="nutpSevenBPerentage" />
+        <result column="nutp_seven_c_number" property="nutpSevenCNumber" />
+        <result column="nutp_seven_c_count" property="nutpSevenCCount" />
+        <result column="nutp_seven_c_perentage" property="nutpSevenCPerentage" />
+        <result column="nutp_seven_d_number" property="nutpSevenDNumber" />
+        <result column="nutp_seven_d_count" property="nutpSevenDCount" />
+        <result column="nutp_seven_d_perentage" property="nutpSevenDPerentage" />
+        <result column="nutp_seven_e_number" property="nutpSevenENumber" />
+        <result column="nutp_seven_e_count" property="nutpSevenECount" />
+        <result column="nutp_seven_e_perentage" property="nutpSevenEPerentage" />
+        <result column="nutp_seven_f_number" property="nutpSevenFNumber" />
+        <result column="nutp_seven_f_count" property="nutpSevenFCount" />
+        <result column="nutp_seven_f_perentage" property="nutpSevenFPerentage" />
+        <result column="nutp_seven_g_number" property="nutpSevenGNumber" />
+        <result column="nutp_seven_g_count" property="nutpSevenGCount" />
+        <result column="nutp_seven_g_perentage" property="nutpSevenGPerentage" />
+        <result column="nutp_eight_a_number" property="nutpEightANumber" />
+        <result column="nutp_eight_a_count" property="nutpEightACount" />
+        <result column="nutp_eight_a_perentage" property="nutpEightAPerentage" />
+        <result column="nutp_eight_b_number" property="nutpEightBNumber" />
+        <result column="nutp_eight_b_count" property="nutpEightBCount" />
+        <result column="nutp_eight_b_perentage" property="nutpEightBPerentage" />
+        <result column="nutp_nine_a_number" property="nutpNineANumber" />
+        <result column="nutp_nine_a_count" property="nutpNineACount" />
+        <result column="nutp_nine_a_perentage" property="nutpNineAPerentage" />
+        <result column="nutp_nine_b_number" property="nutpNineBNumber" />
+        <result column="nutp_nine_b_count" property="nutpNineBCount" />
+        <result column="nutp_nine_b_perentage" property="nutpNineBPerentage" />
+        <result column="nutp_ten_number" property="nutpTenNumber" />
+        <result column="nutp_ten_count" property="nutpTenCount" />
+        <result column="nutp_ten_perentage" property="nutpTenPerentage" />
+        <result column="remark" property="remark" />
+        <result column="enabled" property="enabled" />
+        <result column="valid" property="valid" />
+        <result column="creator" property="creator" />
+        <result column="creator_name" property="creatorName" />
+        <result column="create_time" property="createTime" />
+        <result column="updater" property="updater" />
+        <result column="updater_name" property="updaterName" />
+        <result column="update_time" property="updateTime" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, month_id, nutp_one_number, nutp_one_count, nutp_perentage, nutp_tow_number, nutp_tow_count, nutp_tow_perentage, nutp_three_number, nutp_three_count, nutp_three_perentage, nutp_four_number, nutp_four_count, nutp_four_perentage, nutp_five_number, nutp_five_count, nutp_five_perentage, nutp_six_number, nutp_six_count, nutp_six_perentage, nutp_seven_a_number, nutp_seven_a_count, nutp_seven_a_perentage, nutp_seven_b_number, nutp_seven_b_count, nutp_seven_b_perentage, nutp_seven_c_number, nutp_seven_c_count, nutp_seven_c_perentage, nutp_seven_d_number, nutp_seven_d_count, nutp_seven_d_perentage, nutp_seven_e_number, nutp_seven_e_count, nutp_seven_e_perentage, nutp_seven_f_number, nutp_seven_f_count, nutp_seven_f_perentage, nutp_seven_g_number, nutp_seven_g_count, nutp_seven_g_perentage, nutp_eight_a_number, nutp_eight_a_count, nutp_eight_a_perentage, nutp_eight_b_number, nutp_eight_b_count, nutp_eight_b_perentage, nutp_nine_a_number, nutp_nine_a_count, nutp_nine_a_perentage, nutp_nine_b_number, nutp_nine_b_count, nutp_nine_b_perentage, nutp_ten_number, nutp_ten_count, nutp_ten_perentage, remark, enabled, valid, creator, creator_name, create_time, updater, updater_name, update_time, version
+    </sql>
+
+</mapper>

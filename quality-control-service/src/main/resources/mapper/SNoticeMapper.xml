@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SNoticeMapper">
+
+
+    <select id="selectNoticeByPage" parameterType="com.hpower.param.NoticeParam" resultType="com.hpower.vo.NoticeVo">
+        select
+        id,title,note,create_time as createTime,creator_name as creatorName,file_id as fileId
+        from t_quality_notice
+        <where>
+            <if test="param.title != null and param.title != ''">
+                and title like concat('%',#{param.title},'%')
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                and create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                and create_time &lt;= #{param.endTime}
+            </if>
+            and valid = 1
+            and enabled = 1
+        </where>
+        order by create_time desc
+    </select>
+</mapper>

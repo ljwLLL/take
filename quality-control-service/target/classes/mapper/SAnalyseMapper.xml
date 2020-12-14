@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SAnalyseMapper">
+
+    <resultMap id="selectAllMonthHistory" type="com.hpower.vo.AnalyseMonthHistoryVO">
+        <id  column="month"  property="month"/>
+        <result column="yesReport" property="yesReport" />
+        <result column="noReport" property="noReport" />
+        <result column="cityName" property="historyName" />
+        <association property="noReportHistory" select="selectMonthNoReportHospital" column="month" />
+    </resultMap>
+
+    <select id="selectAnalyseMonthByPage" parameterType="com.hpower.param.AnalyseMonthParam"
+            resultType="com.hpower.vo.AnalyseMonthVo">
+        select
+        m.hospital_id as hospitalId,
+        h.name as hospitalName,
+        sum(case when m.state=2 then 1 else 0 end) yesReport,
+        sum(case when m.state&lt;&gt;2 then 1 else 0 end) noReport
+        from t_hospital_month m
+        left join t_hospital h on m.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null">
+                and m.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.type == 1">
+                and m.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and m.valid = 1
+            and h.valid = 1
+            and h.quality_id = #{param.qualityId}
+        </where>
+        group by m.hospital_id
+        order by yesReport desc
+    </select>
+
+    <select id="selectCount" parameterType="com.hpower.param.AnalyseMonthParam"
+            resultType="java.lang.Integer">
+        select
+        count(*)
+        from t_hospital_month m
+        left join t_hospital h on m.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null">
+                and m.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.type == 1">
+                and m.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and m.valid = 1
+            and h.valid = 1
+            and m.state = 2
+            and h.quality_id = #{param.qualityId}
+        </where>
+    </select>
+
+    <select id="selectAnalyseMonthDetailByPage" parameterType="com.hpower.param.AnalyseMonthDetailParam"
+            resultType="com.hpower.vo.AnalyseMonthDetailVo">
+        select
+        m.id,h.name as hospitalName,m.month,m.time,m.mobile,m.name,m.state,m.dept,m.post
+        from t_hospital_month m
+        left join t_hospital h on m.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null">
+                and m.hospital_id = #{param.hospitalId}
+            </if>
+            and h.quality_id = #{param.qualityId}
+            and m.valid = 1
+            and h.valid = 1
+        </where>
+        order by m.create_time desc
+    </select>
+
+    <select id="selectAnalyseMonth" parameterType="com.hpower.param.AnalyseOneParam"
+            resultType="com.hpower.vo.AnalyseMonthOneVo">
+        select
+        m.id as monthId,
+        s.nuts_one_perentage as nutsOnePerentage, s.nuts_one_number as nutsOneNumber, s.nuts_one_count as nutsOneCount,
+        s.nuts_tow_perentage as nutsTowPerentage, s.nuts_tow_number as nutsTowNumber, s.nuts_tow_count as nutsTowCount,
+        s.nuts_three_perentage as nutsThreePerentage, s.nuts_three_number as nutsThreeNumber, s.nuts_three_count as nutsThreeCount,
+        p.nutp_perentage as nutpPerentage, p.nutp_one_number as nutpOneNumber, p.nutp_one_count as nutpOneCount,
+        p.nutp_tow_perentage as nutpTowPerentage, p.nutp_tow_number as nutpTowNumber, p.nutp_tow_count as nutpTowCount,
+        p.nutp_three_perentage as nutpThreePerentage, p.nutp_three_number as nutpThreeNumber, p.nutp_three_count as nutpThreeCount,
+        p.nutp_four_perentage as nutpFourPerentage, p.nutp_four_number as nutpFourNumber, p.nutp_four_count as nutpFourCount,
+        p.nutp_five_perentage as nutpFivePerentage, p.nutp_five_number as nutpFiveNumber, p.nutp_five_count as nutpFiveCount,
+        p.nutp_six_perentage as nutpSixPerentage, p.nutp_six_number as nutpSixNumber, p.nutp_six_count as nutpSixCount,
+        p.nutp_seven_a_perentage as nutpSevenAPerentage, p.nutp_seven_a_number as nutpSevenANumber, p.nutp_seven_a_count as nutpSevenACount,
+        p.nutp_seven_b_perentage as nutpSevenBPerentage, p.nutp_seven_b_number as nutpSevenBNumber, p.nutp_seven_b_count as nutpSevenBCount,
+        p.nutp_seven_c_perentage as nutpSevenCPerentage, p.nutp_seven_c_number as nutpSevenCNumber, p.nutp_seven_c_count as nutpSevenCCount,
+        p.nutp_seven_d_perentage as nutpSevenDPerentage, p.nutp_seven_d_number as nutpSevenDNumber, p.nutp_seven_d_count as nutpSevenDCount,
+        p.nutp_seven_e_perentage as nutpSevenEPerentage, p.nutp_seven_e_number as nutpSevenENumber, p.nutp_seven_e_count as nutpSevenECount,
+        p.nutp_seven_f_perentage as nutpSevenFPerentage, p.nutp_seven_f_number as nutpSevenFNumber, p.nutp_seven_f_count as nutpSevenFCount,
+        p.nutp_seven_g_perentage as nutpSevenGPerentage, p.nutp_seven_g_number as nutpSevenGNumber, p.nutp_seven_g_count as nutpSevenGCount,
+        p.nutp_eight_a_perentage as nutpEightAPerentage, p.nutp_eight_a_number as nutpEightANumber, p.nutp_eight_a_count as nutpEightACount,
+        p.nutp_eight_b_perentage as nutpEightBPerentage, p.nutp_eight_b_number as nutpEightBNumber, p.nutp_eight_b_count as nutpEightBCount,
+        p.nutp_nine_a_perentage as nutpNineAPerentage, p.nutp_nine_a_number as nutpNineANumber, p.nutp_nine_a_count as nutpNineACount,
+        p.nutp_nine_b_perentage as nutpNineBPerentage, p.nutp_nine_b_number as nutpNineBNumber, p.nutp_nine_b_count as nutpNineBCount,
+        p.nutp_ten_perentage as nutpTenPerentage, p.nutp_ten_number as nutpTenNumber, p.nutp_ten_count as nutpTenCount,
+        r.nuto_one_a_perentage as nutoOneAPerentage, r.nuto_one_a_number as nutoOneANumber, r.nuto_one_a_count as nutoOneACount,
+        r.nuto_one_b_perentage as nutoOneBPerentage, r.nuto_one_b_number as nutoOneBNumber, r.nuto_one_b_count as nutoOneBCount,
+        r.nuto_one_c_perentage as nutoOneCPerentage, r.nuto_one_c_number as nutoOneCNumber, r.nuto_one_c_count as nutoOneCCount,
+        r.nuto_tow_perentage as nutoTowPerentage, r.nuto_tow_number as nutoTowNumber, r.nuto_tow_count as nutoTowCount,
+        m.name,m.dept,m.mobile,m.post,m.remark
+        from t_hospital_month m
+        left join t_hospital_month_process_detail p on m.id = p.month_id
+        left join t_hospital_month_structure_detail s on m.id = s.month_id
+        left join t_hospital_month_result_detail r on m.id = r.month_id
+        left join t_hospital h on m.hospital_id = h.id
+        where
+        m.id = #{param.monthId}
+        and m.valid = 1
+        and p.valid = 1
+        and s.valid = 1
+        and r.valid = 1
+        and m.state &lt;&gt; 0
+    </select>
+
+    <select id="selectAllAnalyseMonth" parameterType="com.hpower.param.AnalyseOneParam"
+            resultType="com.hpower.vo.AnalyseMonthOneVo">
+        select
+        a.nutsOneNumber,a.nutsOneCount,cast(a.nutsOneCount/a.nutsOneNumber*100 as DECIMAL(18,2)) nutsOnePerentage,
+        a.nutsTowNumber,a.nutsTowCount,cast(a.nutsTowCount/a.nutsTowNumber*100 as DECIMAL(18,2)) nutsTowPerentage,
+        a.nutsThreeNumber,a.nutsThreeCount,cast(a.nutsThreeCount/a.nutsThreeNumber*100 as DECIMAL(18,2)) nutsThreePerentage,
+        a.nutpOneNumber,a.nutpOneCount,cast(a.nutpOneCount/a.nutpOneNumber*100 as DECIMAL(18,2)) nutpPerentage,
+        a.nutpTowNumber,a.nutpTowCount,cast(a.nutpTowCount/a.nutpTowNumber*100 as DECIMAL(18,2)) nutpTowPerentage,
+        a.nutpThreeNumber,a.nutpThreeCount,cast(a.nutpThreeCount/a.nutpThreeNumber*100 as DECIMAL(18,2)) nutpThreePerentage,
+        a.nutpFourNumber,a.nutpFourCount,cast(a.nutpFourCount/a.nutpFourNumber*100 as DECIMAL(18,2)) nutpFourPerentage,
+        a.nutpFiveNumber,a.nutpFiveCount,cast(a.nutpFiveCount/a.nutpFiveNumber*100 as DECIMAL(18,2)) nutpFivePerentage,
+        a.nutpSixNumber,a.nutpSixCount,cast(a.nutpSixCount/a.nutpSixNumber*100 as DECIMAL(18,2)) nutpSixPerentage,
+        a.nutpSevenANumber,a.nutpSevenACount,cast(a.nutpSevenACount/a.nutpSevenANumber*100 as DECIMAL(18,2)) nutpSevenAPerentage,
+        a.nutpSevenBNumber,a.nutpSevenBCount,cast(a.nutpSevenBCount/a.nutpSevenBNumber*100 as DECIMAL(18,2)) nutpSevenBPerentage,
+        a.nutpSevenCNumber,a.nutpSevenCCount,cast(a.nutpSevenCCount/a.nutpSevenCNumber*100 as DECIMAL(18,2)) nutpSevenCPerentage,
+        a.nutpSevenDNumber,a.nutpSevenDCount,cast(a.nutpSevenDCount/a.nutpSevenDNumber*100 as DECIMAL(18,2)) nutpSevenDPerentage,
+        a.nutpSevenENumber,a.nutpSevenECount,cast(a.nutpSevenECount/a.nutpSevenENumber*100 as DECIMAL(18,2)) nutpSevenEPerentage,
+        a.nutpSevenFNumber,a.nutpSevenFCount,cast(a.nutpSevenFCount/a.nutpSevenFNumber*100 as DECIMAL(18,2)) nutpSevenFPerentage,
+        a.nutpSevenGNumber,a.nutpSevenGCount,cast(a.nutpSevenGCount/a.nutpSevenGNumber*100 as DECIMAL(18,2)) nutpSevenGPerentage,
+        a.nutpEightANumber,a.nutpEightACount,cast(a.nutpEightACount/a.nutpEightANumber*100 as DECIMAL(18,2)) nutpEightAPerentage,
+        a.nutpEightBNumber,a.nutpEightBCount,cast(a.nutpEightBCount/a.nutpEightBNumber*100 as DECIMAL(18,2)) nutpEightBPerentage,
+        a.nutpNineANumber,a.nutpNineACount,cast(a.nutpNineACount/a.nutpNineANumber*100 as DECIMAL(18,2)) nutpNineAPerentage,
+        a.nutpNineBNumber,a.nutpNineBCount,cast(a.nutpNineBCount/a.nutpNineBNumber*100 as DECIMAL(18,2)) nutpNineBPerentage,
+        a.nutpTenNumber,a.nutpTenCount,cast(a.nutpTenCount/a.nutpTenNumber*100 as DECIMAL(18,2)) nutpTenPerentage,
+        a.nutoOneANumber,a.nutoOneACount,cast(a.nutoOneACount/a.nutoOneANumber*100 as DECIMAL(18,2)) nutoOneAPerentage,
+        a.nutoOneBNumber,a.nutoOneBCount,cast(a.nutoOneBCount/a.nutoOneBNumber*100 as DECIMAL(18,2)) nutoOneBPerentage,
+        a.nutoOneCNumber,a.nutoOneCCount,cast(a.nutoOneCCount/a.nutoOneCNumber*100 as DECIMAL(18,2)) nutoOneCPerentage,
+        a.nutoTowNumber,a.nutoTowCount,cast(a.nutoTowCount/a.nutoTowNumber*100 as DECIMAL(18,2)) nutoTowPerentage
+        from (
+        select
+        sum(case when LENGTH(0+s.nuts_one_number)&lt;&gt;LENGTH(s.nuts_one_number) then 0 else
+        s.nuts_one_number end) as nutsOneNumber,
+        sum(case when LENGTH(0+s.nuts_one_count)&lt;&gt;LENGTH(s.nuts_one_count) then 0 else
+        s.nuts_one_count end) as nutsOneCount,
+        sum(case when LENGTH(0+s.nuts_tow_number)&lt;&gt;LENGTH(s.nuts_tow_number) then 0 else
+        s.nuts_tow_number end) as nutsTowNumber,
+        sum(case when LENGTH(0+s.nuts_tow_count)&lt;&gt;LENGTH(s.nuts_tow_count) then 0 else
+        s.nuts_tow_count end) as nutsTowCount,
+        sum(case when LENGTH(0+s.nuts_three_number)&lt;&gt;LENGTH(s.nuts_three_number) then 0 else
+        s.nuts_three_number end) as nutsThreeNumber,
+        sum(case when LENGTH(0+s.nuts_three_count)&lt;&gt;LENGTH(s.nuts_three_count) then 0 else
+        s.nuts_three_count end) as nutsThreeCount,
+        sum(case when LENGTH(0+p.nutp_one_number)&lt;&gt;LENGTH(p.nutp_one_number) then 0 else
+        p.nutp_one_number end) as nutpOneNumber,
+        sum(case when LENGTH(0+p.nutp_one_count)&lt;&gt;LENGTH(p.nutp_one_count) then 0 else
+        p.nutp_one_count end) as nutpOneCount,
+        sum(case when LENGTH(0+p.nutp_tow_number)&lt;&gt;LENGTH(p.nutp_tow_number) then 0 else
+        p.nutp_tow_number end) as nutpTowNumber,
+        sum(case when LENGTH(0+p.nutp_tow_count)&lt;&gt;LENGTH(p.nutp_tow_count) then 0 else
+        p.nutp_tow_count end) as nutpTowCount,
+        sum(case when LENGTH(0+p.nutp_three_number)&lt;&gt;LENGTH(p.nutp_three_number) then 0 else
+        p.nutp_three_number end) as nutpThreeNumber,
+        sum(case when LENGTH(0+p.nutp_three_count)&lt;&gt;LENGTH(p.nutp_three_count) then 0 else
+        p.nutp_three_count end) as nutpThreeCount,
+        sum(case when LENGTH(0+p.nutp_four_number)&lt;&gt;LENGTH(p.nutp_four_number) then 0 else
+        p.nutp_four_number end) as nutpFourNumber,
+        sum(case when LENGTH(0+p.nutp_four_count)&lt;&gt;LENGTH(p.nutp_four_count) then 0 else
+        p.nutp_four_count end) as nutpFourCount,
+        sum(case when LENGTH(0+p.nutp_five_number)&lt;&gt;LENGTH(p.nutp_five_number) then 0 else
+        p.nutp_five_number end) as nutpFiveNumber,
+        sum(case when LENGTH(0+p.nutp_five_count)&lt;&gt;LENGTH(p.nutp_five_count) then 0 else
+        p.nutp_five_count end) as nutpFiveCount,
+        sum(case when LENGTH(0+p.nutp_six_number)&lt;&gt;LENGTH(p.nutp_six_number) then 0 else
+        p.nutp_six_number end) as nutpSixNumber,
+        sum(case when LENGTH(0+p.nutp_six_count)&lt;&gt;LENGTH(p.nutp_six_count) then 0 else
+        p.nutp_six_count end) as nutpSixCount,
+        sum(case when LENGTH(0+p.nutp_seven_a_number)&lt;&gt;LENGTH(p.nutp_seven_a_number) then 0 else
+        p.nutp_seven_a_number end) as nutpSevenANumber,
+        sum(case when LENGTH(0+p.nutp_seven_a_count)&lt;&gt;LENGTH(p.nutp_seven_a_count) then 0 else
+        p.nutp_seven_a_count end) as nutpSevenACount,
+        sum(case when LENGTH(0+p.nutp_seven_b_number)&lt;&gt;LENGTH(p.nutp_seven_b_number) then 0 else
+        p.nutp_seven_b_number end) as nutpSevenBNumber,
+        sum(case when LENGTH(0+p.nutp_seven_b_count)&lt;&gt;LENGTH(p.nutp_seven_b_count) then 0 else
+        p.nutp_seven_b_count end) as nutpSevenBCount,
+        sum(case when LENGTH(0+p.nutp_seven_c_number)&lt;&gt;LENGTH(p.nutp_seven_c_number) then 0 else
+        p.nutp_seven_c_number end) as nutpSevenCNumber,
+        sum(case when LENGTH(0+p.nutp_seven_c_count)&lt;&gt;LENGTH(p.nutp_seven_c_count) then 0 else
+        p.nutp_seven_c_count end) as nutpSevenCCount,
+        sum(case when LENGTH(0+p.nutp_seven_d_number)&lt;&gt;LENGTH(p.nutp_seven_d_number) then 0 else
+        p.nutp_seven_d_number end) as nutpSevenDNumber,
+        sum(case when LENGTH(0+p.nutp_seven_d_count)&lt;&gt;LENGTH(p.nutp_seven_d_count) then 0 else
+        p.nutp_seven_d_count end) as nutpSevenDCount,
+        sum(case when LENGTH(0+p.nutp_seven_e_number)&lt;&gt;LENGTH(p.nutp_seven_e_number) then 0 else
+        p.nutp_seven_e_number end) as nutpSevenENumber,
+        sum(case when LENGTH(0+p.nutp_seven_e_count)&lt;&gt;LENGTH(p.nutp_seven_e_count) then 0 else
+        p.nutp_seven_e_count end) as nutpSevenECount,
+        sum(case when LENGTH(0+p.nutp_seven_f_number)&lt;&gt;LENGTH(p.nutp_seven_f_number) then 0 else
+        p.nutp_seven_f_number end) as nutpSevenFNumber,
+        sum(case when LENGTH(0+p.nutp_seven_f_count)&lt;&gt;LENGTH(p.nutp_seven_f_count) then 0 else
+        p.nutp_seven_f_count end) as nutpSevenFCount,
+        sum(case when LENGTH(0+p.nutp_seven_g_number)&lt;&gt;LENGTH(p.nutp_seven_g_number) then 0 else
+        p.nutp_seven_g_number end) as nutpSevenGNumber,
+        sum(case when LENGTH(0+p.nutp_seven_g_count)&lt;&gt;LENGTH(p.nutp_seven_g_count) then 0 else
+        p.nutp_seven_g_count end) as nutpSevenGCount,
+        sum(case when LENGTH(0+p.nutp_eight_a_number)&lt;&gt;LENGTH(p.nutp_eight_a_number) then 0 else
+        p.nutp_eight_a_number end) as nutpEightANumber,
+        sum(case when LENGTH(0+p.nutp_eight_a_count)&lt;&gt;LENGTH(p.nutp_eight_a_count) then 0 else
+        p.nutp_eight_a_count end) as nutpEightACount,
+        sum(case when LENGTH(0+p.nutp_eight_b_number)&lt;&gt;LENGTH(p.nutp_eight_b_number) then 0 else
+        p.nutp_eight_b_number end) as nutpEightBNumber,
+        sum(case when LENGTH(0+p.nutp_eight_b_count)&lt;&gt;LENGTH(p.nutp_eight_b_count) then 0 else
+        p.nutp_eight_b_count end) as nutpEightBCount,
+        sum(case when LENGTH(0+p.nutp_nine_a_number)&lt;&gt;LENGTH(p.nutp_nine_a_number) then 0 else
+        p.nutp_nine_a_number end) as nutpNineANumber,
+        sum(case when LENGTH(0+p.nutp_nine_a_count)&lt;&gt;LENGTH(p.nutp_nine_a_count) then 0 else
+        p.nutp_nine_a_count end) as nutpNineACount,
+        sum(case when LENGTH(0+p.nutp_nine_b_number)&lt;&gt;LENGTH(p.nutp_nine_b_number) then 0 else
+        p.nutp_nine_b_number end) as nutpNineBNumber,
+        sum(case when LENGTH(0+p.nutp_nine_b_count)&lt;&gt;LENGTH(p.nutp_nine_b_count) then 0 else
+        p.nutp_nine_b_count end) as nutpNineBCount,
+        sum(case when LENGTH(0+p.nutp_ten_number)&lt;&gt;LENGTH(p.nutp_ten_number) then 0 else
+        p.nutp_ten_number end) as nutpTenNumber,
+        sum(case when LENGTH(0+p.nutp_ten_count)&lt;&gt;LENGTH(p.nutp_ten_count) then 0 else
+        p.nutp_ten_count end) as nutpTenCount,
+        sum(case when LENGTH(0+r.nuto_one_a_number)&lt;&gt;LENGTH(r.nuto_one_a_number) then 0 else
+        r.nuto_one_a_number end) as nutoOneANumber,
+        sum(case when LENGTH(0+r.nuto_one_a_count)&lt;&gt;LENGTH(r.nuto_one_a_count) then 0 else
+        r.nuto_one_a_count end) as nutoOneACount,
+        sum(case when LENGTH(0+r.nuto_one_b_number)&lt;&gt;LENGTH(r.nuto_one_b_number) then 0 else
+        r.nuto_one_b_number end) as nutoOneBNumber,
+        sum(case when LENGTH(0+r.nuto_one_b_count)&lt;&gt;LENGTH(r.nuto_one_b_count) then 0 else
+        r.nuto_one_b_count end) as nutoOneBCount,
+        sum(case when LENGTH(0+r.nuto_one_c_number)&lt;&gt;LENGTH(r.nuto_one_c_number) then 0 else
+        r.nuto_one_c_number end) as nutoOneCNumber,
+        sum(case when LENGTH(0+r.nuto_one_c_count)&lt;&gt;LENGTH(r.nuto_one_c_count) then 0 else
+        r.nuto_one_c_count end) as nutoOneCCount,
+        sum(case when LENGTH(0+r.nuto_tow_number)&lt;&gt;LENGTH(r.nuto_tow_number) then 0 else
+        r.nuto_tow_number end) as nutoTowNumber,
+        sum(case when LENGTH(0+r.nuto_tow_count)&lt;&gt;LENGTH(r.nuto_tow_count) then 0 else
+        r.nuto_tow_count end) as nutoTowCount,
+        'xx' as name,'xx' as dept,'xx' as mobile, 'xx' as post, 'xx' as remark
+        from t_hospital_month m
+        left join t_hospital_month_process_detail p on m.id = p.month_id
+        left join t_hospital_month_structure_detail s on m.id = s.month_id
+        left join t_hospital_month_result_detail r on m.id = r.month_id
+        left join t_hospital h on m.hospital_id = h.id
+        where
+        m.state = 2
+        and m.valid = 1
+        and p.valid = 1
+        and s.valid = 1
+        and r.valid = 1
+        and m.state &lt;&gt; 0
+        and h.quality_id = #{param.qualityId}
+        <if test="param.month != null">
+            and m.month = #{param.month}
+        </if>
+        ) a
+
+    </select>
+
+
+    <select id="selectAnalyseYear" parameterType="com.hpower.param.AnalyseParam"
+            resultType="com.hpower.vo.AnalyseYearVO">
+        select
+        y.hospital_id as hospitalId,
+        h.name as hospitalName,
+        sum(case when y.state=2 then 1 else 0 end) yesReport,
+        sum(case when y.state&lt;&gt;2 then 1 else 0 end) noReport
+        from t_hospital_year y
+        left join t_hospital h on y.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null">
+                and y.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.type == 1">
+                and y.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and y.valid = 1
+            and h.valid = 1
+            and h.quality_id = #{param.qualityId}
+        </where>
+        group by y.hospital_id
+        order by yesReport desc
+    </select>
+
+    <select id="selectAnalyseYearHistory" parameterType="com.hpower.param.AnalyseParam"
+            resultType="com.hpower.vo.AnalyseYearHistoryVO">
+        select h.id as id ,h.hospital_id as hospitalId,h.hospital_name as hospitalName,h.year as year,h.time as
+        time,h.name as name,h.dept as dept,h.post as post,
+        h.mobile as mobile,h.state as state from t_hospital_year as h left join t_hospital as t on h.hospital_id = t.id
+        where h.hospital_id = #{param.hospitalId} and t.quality_id =#{param.qualityId} and h.valid =1 and t.valid =1
+    </select>
+
+
+    <select id="selectAllMonthHistory" resultMap="selectAllMonthHistory">
+        select
+        '浙江省' as cityName,
+        h.`month`,
+        (select count(*) from t_hospital_month where `month` = h.`month` and state =2 and valid = 1 ) as yesReport,
+        (select count(*) from t_hospital_month where `month` = h.`month` and state &lt;&gt; 2 and valid = 1 ) as noReport
+        from t_hospital_month h
+        where h.valid = 1
+        group by h.`month`
+        order by h.month desc
+
+    </select>
+
+    <select id="selectMonthNoReportHospital" parameterType="String" resultType="java.lang.String">
+        select hospital_name as hospitalName from t_hospital_month where valid = 1 and month =#{month} and state &lt;&gt; 2
+    </select>
+</mapper>

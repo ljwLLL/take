@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SUserMapper">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hospital_id, quality_id, password, name, department, post, mobile, sex, age, remark, enabled, valid, creator, creator_name, create_time, updater, updater_name, update_time, version
+    </sql>
+
+    <!-- 根据手机号码查询用户信息 -->
+    <select id="getUserByMobile" parameterType="com.hpower.param.LoginParam" resultType="com.hpower.entity.QualityUser">
+        select
+        <include refid="Base_Column_List"/>
+        from t_quality_user where mobile = #{user.mobile}
+        and valid = 1
+    </select>
+
+    <!-- 分页查询用户信息 -->
+    <select id="selectUserListByPage" parameterType="com.hpower.param.UserQueryParam"
+            resultType="com.hpower.vo.UserVo">
+        select
+        u.id as userId,h.name as hospitalName,u.name,u.department as deptName,u.post,u.mobile,u.create_time as
+        createTime,u.enabled
+        from t_quality_user u
+        left join t_hospital h on u.hospital_id = h.id
+        <where>
+            <if test="param.hospitalId != null">
+                and u.hospital_id = #{param.hospitalId}
+            </if>
+            <if test="param.name != null and param.name != ''">
+                and u.name like concat('%',#{param.name},'%')
+            </if>
+            <if test="param.type == 1">
+                u.hospital_id in
+                <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            and u.valid = 1
+            and u.quality_id = #{param.qualityId}
+        </where>
+        order by u.create_time desc
+    </select>
+</mapper>

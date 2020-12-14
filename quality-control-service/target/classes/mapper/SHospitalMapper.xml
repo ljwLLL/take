@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpower.mapper.SHospitalMapper">
+
+
+
+    <select id="selectHospitalListByPage" parameterType="com.hpower.param.HospitalParam" resultType="com.hpower.vo.HospitalVo">
+       select
+       id,code as hospitalCode,name as hospitalName,level,create_time as createTime,enabled
+       from t_hospital
+       <where>
+           <if test="param.hospitalName != null and param.hospitalName != ''">
+               and name like concat('%',#{param.hospitalName},'%')
+           </if>
+           <if test="param.type == 1">
+               id in
+               <foreach collection="param.list" index="index" item="item" open="(" separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+           and valid = 1
+       </where>
+       order by create_time desc
+    </select>
+</mapper>
